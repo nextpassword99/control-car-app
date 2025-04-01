@@ -100,7 +100,6 @@ const RemoteControl = () => {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Control Remoto</Text>
           <View style={styles.hostContainer}>
             <Text style={styles.hostLabel}>Host:</Text>
             <TextInput
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#121212',
-    padding: 16,
     minHeight: '100%',
   },
   portraitWarning: {
@@ -191,7 +189,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#121212',
-    padding: 20,
   },
   warningText: {
     color: '#FF5722',
@@ -202,7 +199,6 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     alignItems: 'center',
-    marginBottom: 16,
   },
   title: {
     color: '#fff',
@@ -286,7 +282,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#1E1E1E',
-    padding: 16,
     borderRadius: 9999,
     aspectRatio: 1,
     borderWidth: 1,
