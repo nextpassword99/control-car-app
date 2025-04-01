@@ -37,8 +37,6 @@ const RemoteControl = () => {
     return () => subscription.remove();
   }, []);
 
-  const isLandscape = windowDimensions.width > windowDimensions.height;
-
   const sendRequest = async (url: any) => {
     try {
       setStatusMessage(`Enviando: ${url}`);
