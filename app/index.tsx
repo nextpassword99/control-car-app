@@ -14,9 +14,10 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 const RemoteControl = () => {
   const [forwardBackward, setForwardBackward] = useState(0);
   const [leftRight, setLeftRight] = useState(0);
-  const [host, setHost] = useState('http://192.168.18.250');
+  const [host, setHost] = useState('ws://192.168.18.250:81');
   const [statusMessage, setStatusMessage] = useState('Listo para conectar');
   const [isConnected, setIsConnected] = useState(false);
+  const [socket, setSocket] = useState(null);
   const [windowDimensions, setWindowDimensions] = useState(
     Dimensions.get('window')
   );
@@ -37,18 +38,41 @@ const RemoteControl = () => {
     return () => subscription.remove();
   }, []);
 
-  const sendRequest = async (url: any) => {
-    try {
-      setStatusMessage(`Enviando: ${url}`);
-      const response = await fetch(url, { method: 'GET' });
-      const text = await response.text();
-      console.log(text);
-      setStatusMessage(`Último comando: ${url} - Respuesta: ${text}`);
-      if (!isConnected) setIsConnected(true);
-    } catch (error: any) {
-      console.error('Error enviando solicitud:', error);
-      setStatusMessage(`Error: ${error.message}`);
-      setIsConnected(false);
+  useEffect(() => {
+    if (host.trim()) {
+      const ws = new WebSocket(host);
+      ws.onopen = () => {
+        console.log('Conexión WebSocket abierta');
+        setStatusMessage('Conectado al WebSocket');
+        setIsConnected(true);
+      };
+      ws.onclose = () => {
+        console.log('Conexión WebSocket cerrada');
+        setIsConnected(false);
+        setStatusMessage('Desconectado');
+      };
+      ws.onerror = (error) => {
+        console.error('Error en WebSocket', error);
+        setStatusMessage('Error en la conexión WebSocket');
+      };
+      ws.onmessage = (e) => {
+        console.log('Mensaje recibido:', e.data);
+      };
+      setSocket(ws);
+
+      return () => {
+        ws.close();
+      };
+    }
+  }, [host]);
+
+  const sendCommand = (command) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(command);
+      console.log('Comando enviado:', command);
+      setStatusMessage(`Último comando: ${command}`);
+    } else {
+      setStatusMessage('Error: WebSocket no está conectado');
     }
   };
 
@@ -60,27 +84,27 @@ const RemoteControl = () => {
 
     if (!sides) {
       if (intensity > 0) {
-        sendRequest(`${host}/forward?value=${intensity}`);
+        sendCommand(`forward ${intensity}`);
       } else if (intensity < 0) {
-        sendRequest(`${host}/backward?value=${Math.abs(intensity)}`);
+        sendCommand(`backward ${Math.abs(intensity)}`);
       } else {
-        sendRequest(`${host}/stop`);
+        sendCommand('stop');
       }
     } else {
       if (intensity > 0) {
-        sendRequest(`${host}/right?value=${intensity}`);
+        sendCommand(`right ${intensity}`);
       } else if (intensity < 0) {
-        sendRequest(`${host}/left?value=${Math.abs(intensity)}`);
+        sendCommand(`left ${Math.abs(intensity)}`);
       }
     }
   };
 
   const testConnection = () => {
-    if (!host.trim()) {
-      setStatusMessage('Error: Dirección del host no válida');
-      return;
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      sendCommand('ping');
+    } else {
+      setStatusMessage('Error: WebSocket no está conectado');
     }
-    sendRequest(`${host}/ping`);
   };
 
   const resetControls = () => {
