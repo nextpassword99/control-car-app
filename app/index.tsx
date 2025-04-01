@@ -21,6 +21,13 @@ const RemoteControl = () => {
   );
 
   useEffect(() => {
+    const unlockScreenOerientation = async () => {
+      await ScreenOrientation.unlockAsync();
+    };
+    unlockScreenOerientation();
+  }, []);
+
+  useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
       setWindowDimensions(window);
     });
