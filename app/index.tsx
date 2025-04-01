@@ -134,9 +134,6 @@ const RemoteControl = () => {
 
         <View style={styles.controlsLayout}>
           <View style={styles.controlContainer}>
-            <Text style={styles.sliderLabel}>
-              Adelante/Atrás: {forwardBackward}
-            </Text>
             <View style={styles.sliderWrapper}>
               <Slider
                 style={styles.sliderVertical}
@@ -152,22 +149,11 @@ const RemoteControl = () => {
                   processControl(value);
                 }}
               />
-              <View style={styles.sliderLabelsVertical}>
-                <Text style={styles.sliderEndLabel}>Adelante</Text>
-                <Text style={styles.sliderEndLabel}>Atrás</Text>
-              </View>
             </View>
           </View>
 
           <View style={styles.controlContainer}>
-            <Text style={styles.sliderLabel}>
-              Izquierda/Derecha: {leftRight}
-            </Text>
             <View style={styles.sliderWrapper}>
-              <View style={styles.sliderLabelsHorizontal}>
-                <Text style={styles.sliderEndLabel}>Izquierda</Text>
-                <Text style={styles.sliderEndLabel}>Derecha</Text>
-              </View>
               <Slider
                 style={styles.sliderHorizontal}
                 minimumValue={-250}
