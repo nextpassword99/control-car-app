@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const RemoteControl = () => {
   const [forwardBackward, setForwardBackward] = useState(0);
