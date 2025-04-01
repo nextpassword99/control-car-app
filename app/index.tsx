@@ -292,9 +292,11 @@ const styles = StyleSheet.create({
   },
   controlContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#1E1E1E',
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 9999,
+    aspectRatio: 1,
     borderWidth: 1,
     borderColor: '#333',
     margin: 16,
