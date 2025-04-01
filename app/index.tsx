@@ -71,8 +71,6 @@ const RemoteControl = () => {
         sendRequest(`${host}/right?value=${intensity}`);
       } else if (intensity < 0) {
         sendRequest(`${host}/left?value=${Math.abs(intensity)}`);
-      } else {
-        sendRequest(`${host}/center`);
       }
     }
   };
