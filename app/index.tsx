@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   sliderVertical: {
-    width: 40,
+    width: 240,
     height: 240,
     transform: [{ rotate: '-90deg' }],
   },
