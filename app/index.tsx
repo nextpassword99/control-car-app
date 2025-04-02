@@ -29,50 +29,33 @@ const RemoteControl = () => {
     unlockScreenOerientation();
   }, []);
 
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setWindowDimensions(window);
-    });
-    StatusBar.setHidden(true);
-
-    return () => subscription.remove();
-  }, []);
-
-  useEffect(() => {
+  const connectWebsockets = () => {
     if (host.trim()) {
       const ws = new WebSocket(host);
       ws.onopen = () => {
-        console.log('Conexión WebSocket abierta');
-        setStatusMessage('Conectado al WebSocket');
+        setStatusMessage('Dispositivo conectado');
         setIsConnected(true);
       };
       ws.onclose = () => {
-        console.log('Conexión WebSocket cerrada');
         setIsConnected(false);
-        setStatusMessage('Desconectado');
+        setStatusMessage('Dispositivo desconectado');
       };
       ws.onerror = (error) => {
-        console.error('Error en WebSocket', error);
-        setStatusMessage('Error en la conexión WebSocket');
+        setStatusMessage('Error en la conexión');
       };
       ws.onmessage = (e) => {
         console.log('Mensaje recibido:', e.data);
       };
       setSocket(ws);
-
-      return () => {
-        ws.close();
-      };
     }
-  }, [host]);
+  };
 
-  const sendCommand = (command) => {
+  const sendCommand = (command: String) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(command);
-      console.log('Comando enviado:', command);
       setStatusMessage(`Último comando: ${command}`);
     } else {
-      setStatusMessage('Error: WebSocket no está conectado');
+      setStatusMessage('Error: Dispositivo no conectado');
     }
   };
 
