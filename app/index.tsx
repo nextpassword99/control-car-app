@@ -65,29 +65,9 @@ const RemoteControl = () => {
       return;
     }
 
-    if (!sides) {
-      if (intensity > 0) {
-        sendCommand(`forward ${intensity}`);
-      } else if (intensity < 0) {
-        sendCommand(`backward ${Math.abs(intensity)}`);
-      } else {
-        sendCommand('stop');
-      }
-    } else {
-      if (intensity > 0) {
-        sendCommand(`right ${intensity}`);
-      } else if (intensity < 0) {
-        sendCommand(`left ${Math.abs(intensity)}`);
-      }
-    }
-  };
-
-  const testConnection = () => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      sendCommand('ping');
-    } else {
-      setStatusMessage('Error: WebSocket no está conectado');
-    }
+    const direction = sides ? (intensity >= 0 ? 'right' : 'left') : (intensity > 0 ? 'forward' : 'backward');
+    const command = intensity === 0 ? 'stop' : `${direction} ${Math.abs(intensity)}`;
+    sendCommand(command);
   };
 
   const resetControls = () => {
