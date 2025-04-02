@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
@@ -74,10 +74,7 @@ const RemoteControl = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContainer}
-      horizontal={false}
-    >
+    <View>
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.hostContainer}>
@@ -149,7 +146,7 @@ const RemoteControl = () => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
