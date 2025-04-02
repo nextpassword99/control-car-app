@@ -4,8 +4,6 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Dimensions,
-  StatusBar,
   ScrollView,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
@@ -18,9 +16,6 @@ const RemoteControl = () => {
   const [statusMessage, setStatusMessage] = useState('Listo para conectar');
   const [isConnected, setIsConnected] = useState(false);
   const [socket, setSocket] = useState(null);
-  const [windowDimensions, setWindowDimensions] = useState(
-    Dimensions.get('window')
-  );
 
   useEffect(() => {
     const unlockScreenOerientation = async () => {
