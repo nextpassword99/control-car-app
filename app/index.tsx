@@ -61,7 +61,7 @@ const RemoteControl = () => {
     }
 
     const direction = sides ? (intensity >= 0 ? 'right' : 'left') : (intensity > 0 ? 'forward' : 'backward');
-    const command = intensity === 0 ? 'stop' : `${direction} ${Math.abs(intensity)}`;
+    const command = `${direction} ${Math.abs(intensity)}`;
     sendCommand(command);
   };
 
