@@ -39,7 +39,7 @@ const RemoteControl = () => {
     }
   };
 
-  const sendCommand = (command: String) => {
+  const sendCommand = (command: string) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(command);
       setStatusMessage(`Último comando: ${command}`);
