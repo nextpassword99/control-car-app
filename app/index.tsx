@@ -94,7 +94,7 @@ const RemoteControl = () => {
                 Conectar
               </Text>
               <Text style={styles.resetButton} onPress={resetControls}>
-                Reset
+                Detener
               </Text>
             </View>
           </View>
