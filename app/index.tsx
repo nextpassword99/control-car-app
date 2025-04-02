@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
@@ -60,7 +54,13 @@ const RemoteControl = () => {
       return;
     }
 
-    const direction = sides ? (intensity >= 0 ? 'right' : 'left') : (intensity > 0 ? 'forward' : 'backward');
+    const direction = sides
+      ? intensity >= 0
+        ? 'right'
+        : 'left'
+      : intensity > 0
+      ? 'forward'
+      : 'backward';
     const command = `${direction} ${Math.abs(intensity)}`;
     sendCommand(command);
   };
