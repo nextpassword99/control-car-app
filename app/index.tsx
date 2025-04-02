@@ -9,7 +9,7 @@ const RemoteControl = () => {
   const [host, setHost] = useState('ws://192.168.18.250:81');
   const [statusMessage, setStatusMessage] = useState('Listo para conectar');
   const [isConnected, setIsConnected] = useState(false);
-  const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
     const unlockScreenOerientation = async () => {
