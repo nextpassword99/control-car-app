@@ -98,7 +98,7 @@ const RemoteControl = () => {
               placeholderTextColor="#999"
             />
             <View style={styles.buttonContainer}>
-              <Text style={styles.connectButton} onPress={testConnection}>
+              <Text style={styles.connectButton} onPress={connectWebsockets}>
                 Conectar
               </Text>
               <Text style={styles.resetButton} onPress={resetControls}>
