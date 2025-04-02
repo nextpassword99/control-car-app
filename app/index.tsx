@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Dimensions,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
 import Slider from '@react-native-community/slider';
 import * as ScreenOrientation from 'expo-screen-orientation';
 
 const RemoteControl = () => {
   const [forwardBackward, setForwardBackward] = useState(0);
   const [leftRight, setLeftRight] = useState(0);
-  const [host, setHost] = useState('http://192.168.18.250');
+  const [host, setHost] = useState('ws://192.168.18.250:81');
   const [statusMessage, setStatusMessage] = useState('Listo para conectar');
   const [isConnected, setIsConnected] = useState(false);
-  const [windowDimensions, setWindowDimensions] = useState(
-    Dimensions.get('window')
-  );
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
     const unlockScreenOerientation = async () => {
@@ -28,27 +18,33 @@ const RemoteControl = () => {
     unlockScreenOerientation();
   }, []);
 
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setWindowDimensions(window);
-    });
-    StatusBar.setHidden(true);
+  const connectWebsockets = () => {
+    if (host.trim()) {
+      const ws = new WebSocket(host);
+      ws.onopen = () => {
+        setStatusMessage('Dispositivo conectado');
+        setIsConnected(true);
+      };
+      ws.onclose = () => {
+        setIsConnected(false);
+        setStatusMessage('Dispositivo desconectado');
+      };
+      ws.onerror = (error) => {
+        setStatusMessage('Error en la conexión');
+      };
+      ws.onmessage = (e) => {
+        console.log('Mensaje recibido:', e.data);
+      };
+      setSocket(ws);
+    }
+  };
 
-    return () => subscription.remove();
-  }, []);
-
-  const sendRequest = async (url: any) => {
-    try {
-      setStatusMessage(`Enviando: ${url}`);
-      const response = await fetch(url, { method: 'GET' });
-      const text = await response.text();
-      console.log(text);
-      setStatusMessage(`Último comando: ${url} - Respuesta: ${text}`);
-      if (!isConnected) setIsConnected(true);
-    } catch (error: any) {
-      console.error('Error enviando solicitud:', error);
-      setStatusMessage(`Error: ${error.message}`);
-      setIsConnected(false);
+  const sendCommand = (command: string) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(command);
+      setStatusMessage(`Último comando: ${command}`);
+    } else {
+      setStatusMessage('Error: Dispositivo no conectado');
     }
   };
 
@@ -58,29 +54,15 @@ const RemoteControl = () => {
       return;
     }
 
-    if (!sides) {
-      if (intensity > 0) {
-        sendRequest(`${host}/forward?value=${intensity}`);
-      } else if (intensity < 0) {
-        sendRequest(`${host}/backward?value=${Math.abs(intensity)}`);
-      } else {
-        sendRequest(`${host}/stop`);
-      }
-    } else {
-      if (intensity > 0) {
-        sendRequest(`${host}/right?value=${intensity}`);
-      } else if (intensity < 0) {
-        sendRequest(`${host}/left?value=${Math.abs(intensity)}`);
-      }
-    }
-  };
-
-  const testConnection = () => {
-    if (!host.trim()) {
-      setStatusMessage('Error: Dirección del host no válida');
-      return;
-    }
-    sendRequest(`${host}/ping`);
+    const direction = sides
+      ? intensity >= 0
+        ? 'right'
+        : 'left'
+      : intensity > 0
+      ? 'forward'
+      : 'backward';
+    const command = `${direction} ${Math.abs(intensity)}`;
+    sendCommand(command);
   };
 
   const resetControls = () => {
@@ -92,10 +74,7 @@ const RemoteControl = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContainer}
-      horizontal={false}
-    >
+    <View>
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.hostContainer}>
@@ -111,11 +90,11 @@ const RemoteControl = () => {
               placeholderTextColor="#999"
             />
             <View style={styles.buttonContainer}>
-              <Text style={styles.connectButton} onPress={testConnection}>
+              <Text style={styles.connectButton} onPress={connectWebsockets}>
                 Conectar
               </Text>
               <Text style={styles.resetButton} onPress={resetControls}>
-                Reset
+                Detener
               </Text>
             </View>
           </View>
@@ -167,7 +146,7 @@ const RemoteControl = () => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
